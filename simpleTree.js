@@ -46,39 +46,6 @@ $.fn.simpleTree = function(options, data) {
     }
 
     // ------------------------------------------------------------------------
-    // ensures node is visible; only works if node is shown - see expandTo()
-    this.scrollTo = function(
-        node
-    ) {
-    // ------------------------------------------------------------------------
-        let nt = node.domContainer.offset().top,
-            nh = node.domContainer.height(),
-            dt = this.offset().top,
-            dh = this.height();
-        
-        if(nt < dt || nt + nh > dt + dh) {
-            this.animate({
-                scrollTop: nt - dt - dh / 2 // scroll to middle of the tree
-            });
-        }
-    }
-
-    // ------------------------------------------------------------------------
-    // clears the selected node, if any
-    this.clearSelection = function(
-        fireEvent = true
-    ) {
-    // ------------------------------------------------------------------------
-        if(!_selectedNode)
-            return;
-        _selectedNode.domLabel.removeClass(_options.css.selected);
-        _selectedNode = undefined;
-        if(fireEvent)
-            this.trigger('simpleTree:change', [ _selectedNode ]);
-        return this;
-    }
-
-    // ------------------------------------------------------------------------
     // sets the selected node
     this.setSelectedNode = function(
         node,
@@ -97,11 +64,30 @@ $.fn.simpleTree = function(options, data) {
     }
 
     // ------------------------------------------------------------------------
+    // clears the selected node, if any
+    this.clearSelection = function(
+        fireEvent = true
+    ) {
+    // ------------------------------------------------------------------------
+        if(!_selectedNode)
+            return this;
+        _selectedNode.domLabel.removeClass(_options.css.selected);
+        _selectedNode = undefined;
+        if(fireEvent)
+            this.trigger('simpleTree:change', [ _selectedNode ]);
+        return this;
+    }
+
+    // ------------------------------------------------------------------------
     // expands/collapses node with children
     this.toggleSubtree = function(
         node
     ) {
     // ------------------------------------------------------------------------
+        if(node.children.length === 0) {
+            console.warn('Invoked toggleSubtree on node with no children');
+            return this;
+        }
         if(node.expanded)
             node.domChildren.hide();
         else {
@@ -115,7 +101,7 @@ $.fn.simpleTree = function(options, data) {
         }
         node.expanded = !node.expanded;
         node.domContainer
-            .find(_options.css.toggle)
+            .find('.' + _options.css.toggle)
             .first()
             .text(_options.symbols[node.expanded ? 'expanded' : 'collapsed']);
         return this;
@@ -128,6 +114,35 @@ $.fn.simpleTree = function(options, data) {
     ) {
     // ------------------------------------------------------------------------
         return _nodeValueMap[value];
+    }
+
+    // ------------------------------------------------------------------------
+    // ensures node is visible; only works if node is shown - see expandTo()
+    this.scrollTo = function(
+        node
+    ) {
+    // ------------------------------------------------------------------------
+        let nt = node.domContainer.offset().top,
+            nh = node.domContainer.height(),
+            dt = this.offset().top,
+            dh = this.height();
+        
+        if(nt < dt || nt + nh > dt + dh) {
+            this.animate({
+                scrollTop: nt - dt - dh / 2 // scroll to middle of the tree
+            });
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    // expand the ancestry of the given node
+    this.expandTo = function(
+        node
+    ) {
+    // ------------------------------------------------------------------------
+        if(node.parent && !node.parent.expanded)
+            this.toggleSubtree(node.parent);
+        return this;
     }
 
     // ------------------------------------------------------------------------
@@ -190,17 +205,6 @@ $.fn.simpleTree = function(options, data) {
         return this.isNodeVisible(node) 
             ? this.hideNode(node) 
             : this.showNode(node);
-    }
-
-    // ------------------------------------------------------------------------
-    // expand the ancestry of the given node
-    this.expandTo = function(
-        node
-    ) {
-    // ------------------------------------------------------------------------
-        if(node.parent && !node.parent.expanded)
-            this.toggleSubtree(node.parent);
-        return this;
     }
 
     // ========================================================================
@@ -491,12 +495,15 @@ $.fn.simpleTree = function(options, data) {
                 node.indent = indent;
                 node.parent = parent;
                 _nodeValueMap[node.value] = node;
+                if(!$.isArray(node.children))
+                    node.children = [];
                 traverseData(node.children, indent + 1, node);
             });
         })(data);
         _treeData = data;
         _selectedNode = undefined;
         _lastSearchTerm = '';
+        _self.data('simpleTree', _self);
         _self.empty();
         _treeData.forEach(node => _renderNode(node));
         _self.addClass(_options.css.mainContainer);
