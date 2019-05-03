@@ -4,9 +4,9 @@ This plugin renders a tree view into any `div` container.
 
 **Example Screenshot**
 
-This screenshots displays an example tree with a search box. The user is searching for `kera`. All occurrences of the search term in the tree are highlighted. The user has selected the node labeled _"Mittelalterliche Glasurkeramik"_.
+<img style="border: 5px solid black" align="left" width="500" title="simpleTree Screenshot" alt="simpleTree Screenshot" src="https://github.com/eScienceCenter/eScienceCenter.github.io/blob/master/assets/simpleTree/screenshot1.png?raw=true">
 
-![simpleTree Example Screenshot](https://esciencecenter.github.io/assets/simpleTree/screenshot1.png)
+This screenshot displays an example tree with a search box. The user is searching for `kera`. All occurrences of the search term in the tree are highlighted. The user has selected the node labeled _"Mittelalterliche Glasurkeramik"_.
 
 ## Initialization
 
