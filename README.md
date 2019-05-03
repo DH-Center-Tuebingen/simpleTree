@@ -2,9 +2,11 @@
 
 This plugin renders a tree view into any `div` container.
 
-Example screenshot:
+**Example Screenshot**
 
+This screenshots displays an example tree with a search box. The user is searching for `kera`. All occurrences of the search term in the tree are highlighted. The user has selected the node labeled _"Mittelalterliche Glasurkeramik"_.
 
+![simpleTree Example Screenshot](https://esciencecenter.github.io/assets/simpleTree/screenshot1.png)
 
 ## Initialization
 
