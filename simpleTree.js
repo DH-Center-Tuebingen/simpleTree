@@ -93,7 +93,7 @@ $.fn.simpleTree = function(options, data) {
     // ------------------------------------------------------------------------
         return this.traverseTree((node) => {
             if(node.children.length > 0 && !node.expanded)
-                tree.toggleSubtree(node);
+                this.toggleSubtree(node);
         });
     }
 
@@ -104,7 +104,7 @@ $.fn.simpleTree = function(options, data) {
     // ------------------------------------------------------------------------
         return this.traverseTree((node) => {
             if(node.children.length > 0 && node.expanded)
-                tree.toggleSubtree(node);
+                this.toggleSubtree(node);
         });
     }
 
@@ -116,7 +116,7 @@ $.fn.simpleTree = function(options, data) {
     ) {
     // ------------------------------------------------------------------------
         if(startNode === undefined)
-            startNode = [{ children: _treeData }];
+            startNode = { children: _treeData };
         startNode.children.forEach(childNode => {
             callback(childNode);
             if(childNode.children.length > 0)

@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.1
+
+* Bugfix for tree traversal
+
 ## v1.1.0
 
 * Added public method `expandAll()` to expand all nodes
