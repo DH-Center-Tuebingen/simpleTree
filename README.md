@@ -110,6 +110,12 @@ The ojbect exposes the following methods, which can be chained unless a return v
 
 * `clearSelection()`: Clears any selection
 
+* `getNodeCount()`: Get total count of nodes in the tree
+
+* `expandAll()`: Expand all non-leaf nodes
+
+* `collapseAll()`: Collapse all non-leaf nodes
+
 * `toggleSubtree(node)`: expands or collapses the descenandants of `node`
 
 * `getNodeFromValue(value)`: Returns the node with he corresponding `value` property
@@ -125,6 +131,8 @@ The ojbect exposes the following methods, which can be chained unless a return v
 * `hideNode(node)`: Hides a visible `node` in the DOM. This only works on nodes that are visible in the tree (i.e. `isNodeVisible(node)` would evaluate to `true`)
  
 * `toggleNodeVisibility(node)`: Toggles the visibility of the `node` by invoking either showNode(node) or hideNode(node)
+
+* `traverseTree(callback, [startNode])`: Traverses the tree data using a depth-first search and invokes the `callback` function with the current node as a parameter. The parameter `startNode` can be provided as the starting node for traversal; if omitted, the this method will traverse the whole tree
 
 ## Events
 

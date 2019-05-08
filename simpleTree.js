@@ -79,6 +79,53 @@ $.fn.simpleTree = function(options, data) {
     }
 
     // ------------------------------------------------------------------------
+    // get total node count
+    this.getNodeCount = function(
+    ) {
+    // ------------------------------------------------------------------------
+        return _nodeCount;
+    }
+
+    // ------------------------------------------------------------------------
+    // expand all nodes
+    this.expandAll = function(
+    ) {
+    // ------------------------------------------------------------------------
+        return this.traverseTree((node) => {
+            if(node.children.length > 0 && !node.expanded)
+                tree.toggleSubtree(node);
+        });
+    }
+
+    // ------------------------------------------------------------------------
+    // collapse all nodes
+    this.collapseAll = function(
+    ) {
+    // ------------------------------------------------------------------------
+        return this.traverseTree((node) => {
+            if(node.children.length > 0 && node.expanded)
+                tree.toggleSubtree(node);
+        });
+    }
+
+    // ------------------------------------------------------------------------
+    // traverse all tree nodes
+    this.traverseTree = function(
+        callback,
+        startNode = undefined
+    ) {
+    // ------------------------------------------------------------------------
+        if(startNode === undefined)
+            startNode = [{ children: _treeData }];
+        startNode.children.forEach(childNode => {
+            callback(childNode);
+            if(childNode.children.length > 0)
+                this.traverseTree(callback, childNode);
+        });
+        return this;
+    }
+
+    // ------------------------------------------------------------------------
     // expands/collapses node with children
     this.toggleSubtree = function(
         node
@@ -219,6 +266,7 @@ $.fn.simpleTree = function(options, data) {
     var _nodeValueMap;
     var _options;
     var _treeData;
+    var _nodeCount;
 
     // Default options, can be overriden when initializing the jQuery object
     var _defaults = {
@@ -486,11 +534,13 @@ $.fn.simpleTree = function(options, data) {
     // ------------------------------------------------------------------------
         _options = $.extend(true, _defaults, options);
         _nodeValueMap = {};
+        _nodeCount = 0;
         // augment data object with essential info for processing
         (function traverseData(nodeArray, indent = 0, parent = undefined) {
             nodeArray.sort((a, b) => {
                 return a.label.localeCompare(b.label);
             }).forEach((node, index) => {
+                _nodeCount++;
                 node.index = index;
                 node.indent = indent;
                 node.parent = parent;
