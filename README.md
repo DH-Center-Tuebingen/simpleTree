@@ -1,12 +1,41 @@
 # simpleTree - A jQuery Plugin for Searchable Tree Views
 
-This plugin renders a tree view into any `div` container.
+This plugin renders a tree view into any div container.
 
 **Example Screenshot**
 
 The screenshot displays an example tree with a search box. The user is searching for `kera`. All occurrences of the search term in the tree are highlighted. The user has selected the node labeled _"Mittelalterliche Glasurkeramik"_.
 
 <p align="center"><img style="border: 5px solid black" width="500" title="simpleTree Screenshot" alt="simpleTree Screenshot" src="https://github.com/eScienceCenter/eScienceCenter.github.io/blob/master/assets/simpleTree/screenshot1.png?raw=true"></p>
+
+## Features 
+
+* Rendering tree nodes, each with a label, a value and child nodes into any given jQuery div element
+* Collapsing and expanding of non-leaf nodes
+* Custom indenting and styling
+* Toggling visibilty of nodes
+* Filtering tree view by providing a search input box; search term is highlighted in matching node labels
+* Retrieving, setting and clearing the selected node
+* Programmatic scrolling and expanding to any given node 
+
+## Installation
+
+Add the files `simpleTree.js` and `simpleTree.css` to your project
+
+simpleTree is available via NPM:
+
+```npm install @esciencecenter/simple-tree```
+
+## Requirements
+
+* jQuery v3 (might also work with earlier versions, not tested)
+* A container element in the DOM
+
+## Limitations
+
+* All node data must be provided upon initialization
+* Nodes cannot be added or removed at runtime
+* Only single nodes can be selected
 
 ## Initialization
 
