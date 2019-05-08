@@ -169,6 +169,10 @@ The simpleTree element fires the following events:
 
 * `simpleTree:change` is fired when the node selection changes based on user input. The currently selected node is passed along with the event. Note this event is also fired when the node selection is cleared (e.g. by `clearSelection()`); the selected node is then `undefined`.
 
+## Changelog
+
+See the [changelog](CHANGELOG.md).
+
 ## License
 
 simpleTree is licensed under the [MIT License](LICENSE).
