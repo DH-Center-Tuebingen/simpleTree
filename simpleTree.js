@@ -351,10 +351,11 @@ $.fn.simpleTree = function(options, data) {
                     break;
                 }
                 else {
-                    label += "%s<span class='%s'>%s</span>".with(
-                        _htmlEncode(remaining.substr(0, pos)),
-                        _options.css.highlight,
-                        _htmlEncode(remaining.substr(pos, _lastSearchTerm.length))
+                    label += (
+                        _htmlEncode(remaining.substr(0, pos)) 
+                        + "<span class='" + _options.css.highlight + "'>" 
+                        + _htmlEncode(remaining.substr(pos, _lastSearchTerm.length)) 
+                        + "</span>"
                     );
                     remaining = remaining.substr(pos + _lastSearchTerm.length);
                 }

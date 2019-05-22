@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.2
+
+* Fix issue #1 
+
 ## v1.1.1
 
 * Bugfix for tree traversal
