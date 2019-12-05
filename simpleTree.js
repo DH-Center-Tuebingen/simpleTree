@@ -455,6 +455,12 @@ $.fn.simpleTree = function(options, data) {
         ) {
             _self.hideNode(node);
         }
+        if(!node.searchInfo.matches 
+            && !node.searchInfo.anyChildMatches
+            && node.expanded
+        ) {
+            _self.toggleSubtree(node);
+        }
         _renderNodeLabelText(node);
         node.children.forEach(child => _setSearchVisibility(child));
         if(node.children.length > 0 && node.domToggle) {
