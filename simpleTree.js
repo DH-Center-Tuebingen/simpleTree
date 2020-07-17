@@ -373,6 +373,7 @@ $.fn.simpleTree = function(options, data) {
         div.append($('<div/>').addClass(_options.css.indent).css({ 
             width: (node.children.length > 0 ? node.indent : (node.indent + 1)) * _options.indentSize 
         }));
+        if( node.id ) div.attr('id',node.id);
         if(node.children.length > 0) {
             node.domToggle = $('<div/>')
                 .css({ width: _options.indentSize })
