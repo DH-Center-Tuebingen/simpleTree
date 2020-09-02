@@ -24,7 +24,7 @@ Add the files `simpleTree.js` and `simpleTree.css` to your project
 
 simpleTree is available via NPM:
 
-```npm install @esciencecenter/simple-tree```
+```npm install @actarusvb/simple-tree```
 
 ## Requirements
 
