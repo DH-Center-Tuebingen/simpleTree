@@ -386,6 +386,9 @@ $.fn.simpleTree = function(options, data) {
         }  
         node.domLabel = $('<div/>').addClass(_options.css.label)
             .on('click', () => _nodeClicked(node));
+        if (node.customCssClass) {
+            node.domLabel.addClass(node.customCssClass)
+        }
         _renderNodeLabelText(node);
         div.append(node.domLabel);
         if(node.children.length > 0 && _options.childCountShow) {
