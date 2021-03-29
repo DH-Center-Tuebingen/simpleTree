@@ -300,6 +300,7 @@ $.fn.simpleTree = function(options, data) {
             highlight: 'simpleTree-highlight',
             indent: 'simpleTree-indent',
             label: 'simpleTree-label',
+            subLabel: 'simpleTree-sub-label',
             mainContainer: 'simpleTree-mainContainer',
             nodeContainer: 'simpleTree-nodeContainer',
             selected: 'simpleTree-selected',
@@ -386,8 +387,8 @@ $.fn.simpleTree = function(options, data) {
         }  
         node.domLabel = $('<div/>').addClass(_options.css.label)
             .on('click', () => _nodeClicked(node));
-        if (node.customCssClass) {
-            node.domLabel.addClass(node.customCssClass)
+        if (node.labelCssClass) {
+            node.domLabel.addClass(node.labelCssClass)
         }
         _renderNodeLabelText(node);
         div.append(node.domLabel);
