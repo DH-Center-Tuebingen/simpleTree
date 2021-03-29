@@ -395,11 +395,13 @@ $.fn.simpleTree = function(options, data) {
         if (node.subLabel) {
             if (node.subLabelCssClass) {
                 div.append($('<span/>')
+                    .addClass(_options.css.subLabel)
                     .addClass(node.subLabelCssClass)
                     .text(node.subLabel)
                 );
             } else {
                 div.append($('<span/>')
+                    .addClass(_options.css.subLabel)
                     .text(node.subLabel)
                 );
             }
