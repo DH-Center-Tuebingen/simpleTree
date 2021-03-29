@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.2.0
+
+* Added labelCssClass option to data structure
+* Added subLabel option to data structure
+* Added subLabelCssClass option to data structure
+
 ## v1.1.2
 
 * Fix issue #1 

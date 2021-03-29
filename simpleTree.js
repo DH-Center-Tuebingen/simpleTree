@@ -391,7 +391,19 @@ $.fn.simpleTree = function(options, data) {
         }
         _renderNodeLabelText(node);
         div.append(node.domLabel);
-        if(node.children.length > 0 && _options.childCountShow) {
+        if (node.subLabel) {
+            if (node.subLabelCssClass) {
+                div.append($('<span/>')
+                    .addClass(node.subLabelCssClass)
+                    .text(node.subLabel)
+                );
+            } else {
+                div.append($('<span/>')
+                    .text(node.subLabel)
+                );
+            }
+        }
+        if (node.children.length > 0 && _options.childCountShow) {
             div.append($('<span/>')
                 .addClass(_options.css.childCountBadge)
                 .text(node.children.length)

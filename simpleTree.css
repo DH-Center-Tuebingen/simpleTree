@@ -65,6 +65,11 @@ div.simpleTree-mainContainer.countHidden span.simpleTree-childCountBadge {
     border: 1px solid transparent;
 }
 
+.simpleTree-sub-label {
+    color: gray;
+    font-size: smaller;
+}
+
 .simpleTree-label:hover {
     font-weight: bold;
 }

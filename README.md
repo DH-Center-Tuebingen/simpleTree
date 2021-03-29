@@ -28,7 +28,7 @@ simpleTree is available via NPM:
 
 ## Requirements
 
-* jQuery v3 (might also work with earlier versions, not tested)
+* jQuery v3 (might also work with earlier versions, not tested).  Not compatible with jQuery-slim.
 * A container element in the DOM
 
 ## Limitations
@@ -74,6 +74,7 @@ var _defaults = {
             highlight: 'simpleTree-highlight',
             indent: 'simpleTree-indent',
             label: 'simpleTree-label',
+            subLabel: 'simpleTree-sub-label',
             mainContainer: 'simpleTree-mainContainer',
             nodeContainer: 'simpleTree-nodeContainer',
             selected: 'simpleTree-selected',
@@ -85,6 +86,9 @@ var _defaults = {
 `data` is an array of top-level nodes that will always be visible. Each node has the following properties:
 
 * `label` (string): The node label
+* `labelCssClass` (string): An optional CSS class to apply to the node label.
+* `subLabel` (string): The node sub label (optional).  Not searchable.
+* `subLabelCssClass` (string): An optional CSS class to apply to the node subLabel.
 * `value` (any): The app's value to identify the node
 * `children` (array): An array of child nodes. Can be empty or omitted if this is a leaf node
 * `expanded` (boolean, optional): Determines whether the node, if it has children, will be initially displayed as expanded. (default: `false`)
@@ -95,6 +99,8 @@ An example `data` array:
 let data = [
    {
        label: 'Animals',
+       subLabel: '(with 4 legs)',
+       expanded: true,
        value: 'animals',
        children: [
            {
