@@ -300,6 +300,7 @@ $.fn.simpleTree = function(options, data) {
             highlight: 'simpleTree-highlight',
             indent: 'simpleTree-indent',
             label: 'simpleTree-label',
+            subLabel: 'simpleTree-sub-label',
             mainContainer: 'simpleTree-mainContainer',
             nodeContainer: 'simpleTree-nodeContainer',
             selected: 'simpleTree-selected',
@@ -386,9 +387,26 @@ $.fn.simpleTree = function(options, data) {
         }  
         node.domLabel = $('<div/>').addClass(_options.css.label)
             .on('click', () => _nodeClicked(node));
+        if (node.labelCssClass) {
+            node.domLabel.addClass(node.labelCssClass)
+        }
         _renderNodeLabelText(node);
         div.append(node.domLabel);
-        if(node.children.length > 0 && _options.childCountShow) {
+        if (node.subLabel) {
+            if (node.subLabelCssClass) {
+                div.append($('<span/>')
+                    .addClass(_options.css.subLabel)
+                    .addClass(node.subLabelCssClass)
+                    .text(node.subLabel)
+                );
+            } else {
+                div.append($('<span/>')
+                    .addClass(_options.css.subLabel)
+                    .text(node.subLabel)
+                );
+            }
+        }
+        if (node.children.length > 0 && _options.childCountShow) {
             div.append($('<span/>')
                 .addClass(_options.css.childCountBadge)
                 .text(node.children.length)
