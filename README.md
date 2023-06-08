@@ -35,7 +35,6 @@ simpleTree is available via NPM:
 
 * All node data must be provided upon initialization
 * Nodes cannot be added or removed at runtime
-* Only single nodes can be selected
 
 ## Initialization
 
@@ -133,9 +132,23 @@ The tree object's public method API can be retrieved by calling `$('#mytree').da
 
 The ojbect exposes the following methods, which can be chained unless a return value is mentioned explicitly:
 
-* `getSelectedNode()`: returns the currently selected node object, or `undefined` if no node is selected
+* `getFirstSelectedNode()`: Returns the first selected node object, or `undefined` if no node selected exists
 
-* `setSelectedNode(node)`: makes `node` the selected node
+* `getAllSelectedNodes()`: Returns an array with all selected nodes
+
+* `getSelectedNode()`: Returns the currently selected node object, or `undefined` if no node is selected
+
+* `setSelectedNode(node)`: Makes `node` selected
+
+* `unsetSelectedNode(node)`: Makes `node` unselected
+
+* `showSelectedOnly()`: Hides all the leaf nodes not selected and parent nodes without children selected
+
+* `clearShowSelectedOnly()`: Unhides all the unselected leaf nodes and parent nodes without children unselected hidden via `clearShowSelectedOnly()`
+
+* `selectSearchOccurrences()`: Select current search occurrences nodes
+
+* `unselectSearchOccurrences()`: Unselect current search occurrences nodes
 
 * `clearSelection()`: Clears any selection
 
@@ -145,7 +158,7 @@ The ojbect exposes the following methods, which can be chained unless a return v
 
 * `collapseAll()`: Collapse all non-leaf nodes
 
-* `toggleSubtree(node)`: expands or collapses the descenandants of `node`
+* `toggleSubtree(node)`: Expands or collapses the descenandants of `node`
 
 * `getNodeFromValue(value)`: Returns the node with he corresponding `value` property
 
