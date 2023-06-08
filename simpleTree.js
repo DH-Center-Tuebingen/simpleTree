@@ -56,11 +56,12 @@ $.fn.simpleTree = function(options, data) {
     this.getAllSelectedNodes = function(
     ) {
     // ------------------------------------------------------------------------
-        	let selectedNodes = [];
-        return this.traverseTree((node) => {
+ 	let selectedNodes = [];
+        this.traverseTree((node) => {
             if(node.selected)
                 selectedNodes.push(node);	
         });
+        return selectedNodes;
     }
 
     // ------------------------------------------------------------------------
