@@ -37,45 +37,108 @@ $.fn.simpleTree = function(options, data) {
     //
     // ========================================================================
 
+
     // ------------------------------------------------------------------------
-    // set the selected node
-    this.getSelectedNode = function(
+    // get the first selected node	
+    this.getFirstSelectedNode = function() {
+		let selectedNode = undefined;
+		this.traverseTree((node) => {
+			if (node.selected && !selectedNode) {
+				selectedNode = node;
+				// Stop the traversal by returning false
+				return false;
+			}
+		});
+		return selectedNode;
+	}
+	
+    // ------------------------------------------------------------------------
+    // get all the selected nodes
+    this.getAllSelectedNodes = function(
     ) {
     // ------------------------------------------------------------------------
-        return _selectedNode;
+        	let selectedNodes = [];
+        this.traverseTree((node) => {
+            if(node.selected)
+                selectedNodes.push(node);	
+        });
+        return selectedNodes;
     }
 
     // ------------------------------------------------------------------------
-    // sets the selected node
+    // selects a node
     this.setSelectedNode = function(
         node,
         fireEvent = true
     ) {
     // ------------------------------------------------------------------------
-        if(node === _selectedNode)
+        if(node.selected)
             return;
-        this.clearSelection(false);
+        this.unsetSelectedNode(node, false);
         this.expandTo(node);
         node.domLabel.addClass(_options.css.selected);
-        _selectedNode = node;
+        node.selected = true;
         if(fireEvent)
-            this.trigger('simpleTree:change', [ _selectedNode ]);
+            this.trigger('simpleTree:change', [ node ]);
         return this;
     }
 
     // ------------------------------------------------------------------------
-    // clears the selected node, if any
-    this.clearSelection = function(
+    // clears the selected node, if set
+    this.unsetSelectedNode = function(
+		node,
         fireEvent = true
     ) {
     // ------------------------------------------------------------------------
-        if(!_selectedNode)
+        if(!node.selected)
             return this;
-        _selectedNode.domLabel.removeClass(_options.css.selected);
-        _selectedNode = undefined;
+        node.domLabel.removeClass(_options.css.selected);
+        node.selected = false;
         if(fireEvent)
-            this.trigger('simpleTree:change', [ _selectedNode ]);
+            this.trigger('simpleTree:change', [ node ]);
         return this;
+    }
+    
+    // ------------------------------------------------------------------------
+    // clear all the selected nodes
+    this.clearSelection = function(
+    ) {
+    // ------------------------------------------------------------------------
+    	if(_isShowingSelectedOnly)
+    		this.clearShowSelectedOnly();
+        return this.traverseTree((node) => {
+            if(node.selected)
+                this.unsetSelectedNode(node);	
+        });
+    }
+
+    // ------------------------------------------------------------------------
+    // clear all the selected nodes
+    this.clearShowSelectedOnly = function(
+    ) {
+    // ------------------------------------------------------------------------
+    	if(!_isShowingSelectedOnly)
+    		return;
+        _self.removeClass('countHidden');
+		_treeData.forEach(node => _restoreNodeAfterClearSelection(node));
+		_isShowingSelectedOnly = false;
+    }
+
+    // ------------------------------------------------------------------------
+    // show the selected nodes only
+    this.showSelectedOnly = function(
+    ) {
+    // ------------------------------------------------------------------------
+    	if(!this.getFirstSelectedNode())
+    		return;
+        _self.hide(); 
+        _treeData.forEach(node => {
+			_setSelectionInfo(node);
+            _setSelectionVisibility(node);
+        });
+        _self.addClass('countHidden'); 
+        _self.show();
+        	_isShowingSelectedOnly = true;
     }
 
     // ------------------------------------------------------------------------
@@ -254,6 +317,48 @@ $.fn.simpleTree = function(options, data) {
             : this.showNode(node);
     }
 
+    // ------------------------------------------------------------------------
+    // set the node available
+    this.setNodeAvailable = function(
+        node
+    ) {
+    // ------------------------------------------------------------------------
+        node.available = true;
+        return this;
+    }
+
+    // ------------------------------------------------------------------------
+    // set the node unavailable
+    this.setNodeUnavailable = function(
+        node
+    ) {
+    // ------------------------------------------------------------------------
+        node.available = false;
+        return this;
+    }
+
+    // ------------------------------------------------------------------------
+    // select current search occurrences nodes
+    this.selectSearchOccurrences = function(
+    ) {
+    // ------------------------------------------------------------------------
+        return this.traverseTree((node, lastChildOnly = true) => {
+            if(this.isNodeVisible(node) && (lastChildOnly && node.children.length === 0))
+            		this.setSelectedNode(node);
+        });
+    }
+        
+    // ------------------------------------------------------------------------
+    // unselect current search occurrences nodes
+    this.unselectSearchOccurrences = function(
+    ) {
+    // ------------------------------------------------------------------------
+        return this.traverseTree((node) => {
+            if(this.isNodeVisible(node))
+            		this.unsetSelectedNode(node);
+        });
+    }
+
     // ========================================================================
     //
     // PRIVATE VARIABLES
@@ -261,7 +366,7 @@ $.fn.simpleTree = function(options, data) {
     // ========================================================================
 
     var _self = this;
-    var _selectedNode;
+    var _isShowingSelectedOnly = false;
     var _lastSearchTerm;
     var _nodeValueMap;
     var _options;
@@ -318,8 +423,8 @@ $.fn.simpleTree = function(options, data) {
         node
     ) {
     // ------------------------------------------------------------------------
-        if(node === _selectedNode)
-            _self.clearSelection(true);
+        if(node.selected)
+            _self.unsetSelectedNode(node, true);
         else
             _self.setSelectedNode(node);
     }
@@ -408,6 +513,81 @@ $.fn.simpleTree = function(options, data) {
         if(node.expanded)
             node.children.forEach(child => _renderNode(child));
     }
+    
+    
+    // ------------------------------------------------------------------------
+    var _setSelectionInfo = function(
+        node
+    ) {
+    // ------------------------------------------------------------------------
+        if(node.selectionInfo) {
+            node.selectionInfo.prevSelected = node.selectionInfo.selected;
+            node.selectionInfo.selected = node.selected;
+        }
+        else {
+            node.selectionInfo = {
+                selected: node.selected,
+                expandedBefore: !!node.expanded
+            };
+        }
+        node.selectionInfo.anyChildSelected = false;
+        node.children.forEach(child => {
+            if(_setSelectionInfo(child))
+                node.selectionInfo.anyChildSelected = true;
+        });
+        return node.selectionInfo.selected || node.selectionInfo.anyChildSelected;
+    }
+
+    // ------------------------------------------------------------------------
+    var _setSelectionVisibility = function(
+        node
+    ) {
+    // ------------------------------------------------------------------------
+        if((node.selectionInfo.selected || node.selectionInfo.anyChildSelected)
+            && !_self.isNodeVisible(node)
+        ) {
+            _self.showNode(node);
+        }
+        if(node.selectionInfo.anyChildSelected 
+            && !node.expanded
+        ) {
+            _self.toggleSubtree(node);
+        }
+        if(!node.selectionInfo.selected 
+            && !node.selectionInfo.anyChildSelected
+            && _self.isNodeVisible(node)
+        ) {
+            _self.hideNode(node);
+        }
+        node.children.forEach(child => _setSelectionVisibility(child));
+        if(node.children.length > 0 && node.domToggle) {
+            if(!node.selectionInfo.anyChildSelected)
+                node.domToggle.addClass('disabled');
+            else
+                node.domToggle.removeClass('disabled');
+        }
+    }
+    
+    // ------------------------------------------------------------------------
+    var _restoreNodeAfterClearSelection = function(
+        node
+    ) {
+    // ------------------------------------------------------------------------
+        if(node.selectionInfo) {
+            if(!_self.isNodeVisible(node))
+            _self.showNode(node);
+            if(node.children.length > 0) {
+                node.domToggle && node.domToggle.removeClass('disabled');
+                if((node.selectionInfo.expandedBefore && !node.expanded)
+                    || (!node.selectionInfo.expandedBefore && node.expanded)
+                ) {
+                    _self.toggleSubtree(node);
+                }
+            }
+            delete node.selectionInfo;
+            node.children.forEach(child => _restoreNodeAfterClearSelection(child));
+        }  
+    }
 
     // ------------------------------------------------------------------------
     var _setSearchInfo = function(
@@ -441,17 +621,20 @@ $.fn.simpleTree = function(options, data) {
     // ------------------------------------------------------------------------
         if((node.searchInfo.matches || node.searchInfo.anyChildMatches)
             && !_self.isNodeVisible(node)
+            	&& node.available
         ) {
             _self.showNode(node);
         }
         if(node.searchInfo.anyChildMatches 
             && !node.expanded
+            	&& node.available
         ) {
             _self.toggleSubtree(node);
         }
         if(!node.searchInfo.matches 
             && !node.searchInfo.anyChildMatches
             && _self.isNodeVisible(node)
+            && node.available
         ) {
             _self.hideNode(node);
         }
@@ -471,8 +654,8 @@ $.fn.simpleTree = function(options, data) {
     ) {
     // ------------------------------------------------------------------------
         if(node.searchInfo) {
-            if(!_self.isNodeVisible(node))
-            _self.showNode(node);
+            if(node.available && !_self.isNodeVisible(node))
+            		_self.showNode(node);
             if(node.children.length > 0) {
                 node.domToggle && node.domToggle.removeClass('disabled');
                 if((node.searchInfo.expandedBefore && !node.expanded)
@@ -503,8 +686,9 @@ $.fn.simpleTree = function(options, data) {
             _treeData.forEach(node => _restoreNodeAfterSearch(node));
             _self.removeClass('countHidden');
             // restore selection
-            if(_selectedNode)
-                _self.expandTo(_selectedNode).scrollTo(_selectedNode);
+            	let firstSelectedNode = _self.getFirstSelectedNode();
+            if(firstSelectedNode)
+                _self.expandTo(firstSelectedNode).scrollTo(firstSelectedNode);
         }
         else {
             _treeData.forEach(node => {
@@ -545,6 +729,8 @@ $.fn.simpleTree = function(options, data) {
                 node.index = index;
                 node.indent = indent;
                 node.parent = parent;
+                node.selected = false;
+                node.available = true;
                 _nodeValueMap[node.value] = node;
                 if(!$.isArray(node.children))
                     node.children = [];
@@ -552,7 +738,6 @@ $.fn.simpleTree = function(options, data) {
             });
         })(data);
         _treeData = data;
-        _selectedNode = undefined;
         _lastSearchTerm = '';
         _self.data('simpleTree', _self);
         _self.empty();
