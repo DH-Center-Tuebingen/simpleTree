@@ -37,6 +37,7 @@ $.fn.simpleTree = function(options, data) {
     //
     // ========================================================================
 
+
     // ------------------------------------------------------------------------
     // get the first selected node	
     this.getFirstSelectedNode = function() {
@@ -56,7 +57,7 @@ $.fn.simpleTree = function(options, data) {
     this.getAllSelectedNodes = function(
     ) {
     // ------------------------------------------------------------------------
- 	let selectedNodes = [];
+        	let selectedNodes = [];
         this.traverseTree((node) => {
             if(node.selected)
                 selectedNodes.push(node);	
@@ -314,6 +315,26 @@ $.fn.simpleTree = function(options, data) {
         return this.isNodeVisible(node) 
             ? this.hideNode(node) 
             : this.showNode(node);
+    }
+
+    // ------------------------------------------------------------------------
+    // set the node available
+    this.setNodeAvailable = function(
+        node
+    ) {
+    // ------------------------------------------------------------------------
+        node.available = true;
+        return this;
+    }
+
+    // ------------------------------------------------------------------------
+    // set the node unavailable
+    this.setNodeUnavailable = function(
+        node
+    ) {
+    // ------------------------------------------------------------------------
+        node.available = false;
+        return this;
     }
 
     // ------------------------------------------------------------------------
@@ -600,17 +621,20 @@ $.fn.simpleTree = function(options, data) {
     // ------------------------------------------------------------------------
         if((node.searchInfo.matches || node.searchInfo.anyChildMatches)
             && !_self.isNodeVisible(node)
+            	&& node.available
         ) {
             _self.showNode(node);
         }
         if(node.searchInfo.anyChildMatches 
             && !node.expanded
+            	&& node.available
         ) {
             _self.toggleSubtree(node);
         }
         if(!node.searchInfo.matches 
             && !node.searchInfo.anyChildMatches
             && _self.isNodeVisible(node)
+            && node.available
         ) {
             _self.hideNode(node);
         }
@@ -630,8 +654,8 @@ $.fn.simpleTree = function(options, data) {
     ) {
     // ------------------------------------------------------------------------
         if(node.searchInfo) {
-            if(!_self.isNodeVisible(node))
-            _self.showNode(node);
+            if(node.available && !_self.isNodeVisible(node))
+            		_self.showNode(node);
             if(node.children.length > 0) {
                 node.domToggle && node.domToggle.removeClass('disabled');
                 if((node.searchInfo.expandedBefore && !node.expanded)
@@ -705,7 +729,8 @@ $.fn.simpleTree = function(options, data) {
                 node.index = index;
                 node.indent = indent;
                 node.parent = parent;
-                	node.selected = false;
+                node.selected = false;
+                node.available = true;
                 _nodeValueMap[node.value] = node;
                 if(!$.isArray(node.children))
                     node.children = [];
