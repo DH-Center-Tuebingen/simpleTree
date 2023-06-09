@@ -152,6 +152,10 @@ The ojbect exposes the following methods, which can be chained unless a return v
 
 * `clearSelection()`: Clears any selection
 
+* `setNodeUnavailable(node)`: Makes `node` unavailable to show up in searches
+
+* `setNodeAvailable(node)`: Makes `node` available to show up in searches
+
 * `getNodeCount()`: Get total count of nodes in the tree
 
 * `expandAll()`: Expand all non-leaf nodes
